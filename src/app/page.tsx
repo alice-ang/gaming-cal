@@ -1,12 +1,15 @@
-import { Button } from "@/components/ui/button";
+import { ScheduleCalendar } from "@/components";
 import Link from "next/link";
+const bookedDays = [
+  new Date(2024, 7, 8),
+  new Date(2024, 7, 9),
+  new Date(2024, 7, 11),
+];
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Button asChild>
-        <Link href="/schedule">Schedule</Link>
-      </Button>
+    <main className="">
+      <ScheduleCalendar bookedDays={bookedDays} />
     </main>
   );
 }

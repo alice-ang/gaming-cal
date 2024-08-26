@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { NavBar } from "@/components";
 import { cn } from "@/lib/utils";
+import { Dialog } from "@/components/ui/dialog";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,9 +19,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "p-4")}>
-        <NavBar />
-        {children}
+      <body className={cn(inter.className, "bg-slate-100 p-4")}>
+        <Dialog>
+          <NavBar />
+          {children}
+        </Dialog>
       </body>
     </html>
   );
