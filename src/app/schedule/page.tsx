@@ -8,7 +8,7 @@ export default function Schedule() {
   ];
 
   return (
-    <main className=" ">
+    <main className="">
       <ScheduleCalendar bookedDays={bookedDays} />
     </main>
   );

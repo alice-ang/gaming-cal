@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, " max-w-sm p-4")}>
+      <body className={cn(inter.className, "p-4")}>
         <NavBar />
         {children}
       </body>

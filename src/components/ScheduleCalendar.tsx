@@ -11,7 +11,7 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
       mode="single"
       selected={date}
       onSelect={setDate}
-      className="rounded-md border"
+      className="rounded-md border max-w-4xl"
       modifiers={{
         booked: bookedDays,
       }}
