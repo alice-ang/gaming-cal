@@ -36,7 +36,7 @@ export const ShareCalendar: FC<DialogProps> = ({ ...props }) => {
   return (
     <Dialog {...props}>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant="secondary">
           Share Calendar <Send className="ml-2" size={18} />
         </Button>
       </DialogTrigger>
@@ -63,7 +63,7 @@ export const ShareCalendar: FC<DialogProps> = ({ ...props }) => {
             {copied ? (
               <div>
                 <span className="sr-only">Copied</span>
-                <Check className="h-4 w-4 text-green-500" />
+                <Check className="h-4 w-4 " />
               </div>
             ) : (
               <div>

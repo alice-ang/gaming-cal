@@ -13,6 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from './ui/dialog';
+import { CalendarDayView } from './CalendarDayView';
 
 type TimeSlot = {
   start: string;
@@ -70,13 +71,13 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
           booked: 'bg-green-100',
         }}
       />
-      <Dialog open={open} onOpenChange={setOpen}>
+      {/* <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>{date?.toDateString()}</DialogTitle>
             <DialogDescription>Select time slots</DialogDescription>
           </DialogHeader>
-          <div className="space-y-2">
+        <div className="space-y-2">
             {timeSlots.map((slot, index) => (
               <div className="flex flex-row justify-between" key={index}>
                 <div className="flex flex-row items-center space-x-4">
@@ -103,7 +104,8 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
                 </Button>
               </div>
             ))}
-          </div>
+          </div> 
+
 
           <DialogFooter>
             <div className="flex flex-row justify-between w-full">
@@ -121,7 +123,7 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
             </div>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };
