@@ -1,29 +1,18 @@
-"use client";
-import React, { FC, useState } from "react";
-import { Calendar } from "./ui/calendar";
+'use client';
+import { CirclePlus, X } from 'lucide-react';
+import { FC, useState } from 'react';
+import { TimeSlot } from './TimeSlot';
+import { Button } from './ui/button';
+import { Calendar } from './ui/calendar';
 import {
+  Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
-import { Button } from "./ui/button";
-import { CirclePlus, X } from "lucide-react";
-import { TimeSlot } from "./TimeSlot";
-
-const timeSlots = [
-  "09:00 AM",
-  "10:00 AM",
-  "11:00 AM",
-  "12:00 PM",
-  "01:00 PM",
-  "02:00 PM",
-  "03:00 PM",
-  "04:00 PM",
-  "05:00 PM",
-];
+} from './ui/dialog';
 
 type TimeSlot = {
   start: string;
@@ -35,15 +24,20 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
 }) => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([
-    { start: "", end: "" },
+    { start: '', end: '' },
   ]);
+  const [open, setOpen] = useState(false);
 
   const handleDateSelect = (date: Date | undefined) => {
-    setDate(date);
+    if (date) {
+      setDate(date);
+      setTimeSlots([]);
+      setOpen(true);
+    }
   };
 
   const handleAddTimeSlot = () => {
-    setTimeSlots([...timeSlots, { start: "", end: "" }]);
+    setTimeSlots([...timeSlots, { start: '', end: '' }]);
   };
 
   const handleRemoveTimeSlot = (index: number) => {
@@ -53,7 +47,7 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
 
   const handleTimeChange = (
     index: number,
-    field: "start" | "end",
+    field: 'start' | 'end',
     value: string
   ) => {
     const newTimeSlots = [...timeSlots];
@@ -62,59 +56,72 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
   };
 
   return (
-    <>
-      <DialogTrigger asChild>
-        <div>
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={handleDateSelect}
-            className="rounded-md border max-w-4xl mx-auto bg-background"
-            modifiers={{
-              booked: bookedDays,
-            }}
-            modifiersClassNames={{
-              booked: "bg-green-100",
-            }}
-          />
-        </div>
-      </DialogTrigger>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>{date?.toDateString()}</DialogTitle>
-          <DialogDescription>Select time slots</DialogDescription>
-        </DialogHeader>
-        <div>
-          {timeSlots.map((slot, index) => (
-            <div className="flex flex-row justify-between" key={index}>
-              <div className="flex flex-row items-center space-x-4">
-                <TimeSlot /> <p>to</p> <TimeSlot type="end" />
+    <div>
+      <Calendar
+        showWeekNumber
+        mode="single"
+        selected={date}
+        onSelect={handleDateSelect}
+        className="rounded-md border max-w-4xl mx-auto bg-background"
+        modifiers={{
+          booked: bookedDays,
+        }}
+        modifiersClassNames={{
+          booked: 'bg-green-100',
+        }}
+      />
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>{date?.toDateString()}</DialogTitle>
+            <DialogDescription>Select time slots</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            {timeSlots.map((slot, index) => (
+              <div className="flex flex-row justify-between" key={index}>
+                <div className="flex flex-row items-center space-x-4">
+                  <TimeSlot
+                    onValueChange={(value) =>
+                      handleTimeChange(index, 'start', value)
+                    }
+                  />
+                  <p>to</p>{' '}
+                  <TimeSlot
+                    type="end"
+                    startTime={timeSlots[0]?.['start']}
+                    onValueChange={(value) =>
+                      handleTimeChange(index, 'end', value)
+                    }
+                  />
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleRemoveTimeSlot(index)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleRemoveTimeSlot(index)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
-        </div>
-
-        <DialogFooter>
-          <div className="flex flex-row justify-between w-full">
-            <Button
-              variant="outline"
-              className="gap-2"
-              onClick={handleAddTimeSlot}
-            >
-              <CirclePlus size={16} />
-              Add time slot
-            </Button>
-            <Button>Save changes</Button>
+            ))}
           </div>
-        </DialogFooter>
-      </DialogContent>
-    </>
+
+          <DialogFooter>
+            <div className="flex flex-row justify-between w-full">
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={handleAddTimeSlot}
+              >
+                <CirclePlus size={16} />
+                Add time slot
+              </Button>
+              <DialogClose asChild>
+                <Button type="button">Save changes</Button>
+              </DialogClose>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
