@@ -57,11 +57,11 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
   return (
     <div>
       <Calendar
+        showWeekNumber
         mode="single"
         selected={date}
         onSelect={handleDateSelect}
         className="rounded-md border max-w-4xl mx-auto bg-background"
-        weekStartsOn={1}
         modifiers={{
           booked: bookedDays,
         }}
@@ -87,6 +87,7 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
                   <p>to</p>{' '}
                   <TimeSlot
                     type="end"
+                    startTime={timeSlots[0]?.['start']}
                     onValueChange={(value) =>
                       handleTimeChange(index, 'end', value)
                     }
