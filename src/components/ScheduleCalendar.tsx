@@ -6,6 +6,7 @@ import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -114,9 +115,9 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
                 <CirclePlus size={16} />
                 Add time slot
               </Button>
-              <Button onClick={() => console.log(timeSlots)}>
-                Save changes
-              </Button>
+              <DialogClose asChild>
+                <Button type="button">Save changes</Button>
+              </DialogClose>
             </div>
           </DialogFooter>
         </DialogContent>
