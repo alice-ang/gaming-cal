@@ -1,4 +1,5 @@
-import { Copy, Send } from 'lucide-react';
+'use client';
+import { Check, Copy, Send } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -14,13 +15,28 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { DialogProps } from '@radix-ui/react-dialog';
-import { FC } from 'react';
+import { FC, useRef, useState } from 'react';
 
 export const ShareCalendar: FC<DialogProps> = ({ ...props }) => {
+  const [copied, setCopied] = useState(false);
+  const linkInputRef = useRef<HTMLInputElement>(null);
+
+  const copyToClipboard = () => {
+    if (linkInputRef.current) {
+      navigator.clipboard
+        .writeText(linkInputRef.current.value)
+        .then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        })
+        .catch((err) => console.error('Failed to copy text: ', err));
+    }
+  };
+
   return (
     <Dialog {...props}>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant="secondary">
           Share Calendar <Send className="ml-2" size={18} />
         </Button>
       </DialogTrigger>
@@ -37,14 +53,24 @@ export const ShareCalendar: FC<DialogProps> = ({ ...props }) => {
               Link
             </Label>
             <Input
+              ref={linkInputRef}
               id="link"
               defaultValue="https://ui.shadcn.com/docs/installation"
               readOnly
             />
           </div>
-          <Button type="submit" size="sm" className="px-3">
-            <span className="sr-only">Copy</span>
-            <Copy className="h-4 w-4" />
+          <Button size="sm" className="px-3" onClick={copyToClipboard}>
+            {copied ? (
+              <div>
+                <span className="sr-only">Copied</span>
+                <Check className="h-4 w-4 " />
+              </div>
+            ) : (
+              <div>
+                <span className="sr-only">Copy</span>
+                <Copy className="h-4 w-4" />
+              </div>
+            )}
           </Button>
         </div>
         <DialogFooter className="sm:justify-start">

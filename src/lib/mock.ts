@@ -1,26 +1,59 @@
-export const timeSlots = [
-  { title: '00:00', value: '00:00' },
-  { title: '01:00', value: '01:00' },
-  { title: '02:00', value: '02:00' },
-  { title: '03:00', value: '03:00' },
-  { title: '04:00', value: '04:00' },
-  { title: '05:00', value: '05:00' },
-  { title: '06:00', value: '06:00' },
-  { title: '07:00', value: '07:00' },
-  { title: '08:00', value: '08:00' },
-  { title: '09:00', value: '09:00' },
-  { title: '10:00', value: '10:00' },
-  { title: '11:00', value: '11:00' },
-  { title: '12:00', value: '12:00' },
-  { title: '13:00', value: '13:00' },
-  { title: '14:00', value: '14:00' },
-  { title: '15:00', value: '15:00' },
-  { title: '16:00', value: '16:00' },
-  { title: '17:00', value: '17:00' },
-  { title: '18:00', value: '18:00' },
-  { title: '19:00', value: '19:00' },
-  { title: '20:00', value: '20:00' },
-  { title: '21:00', value: '21:00' },
-  { title: '22:00', value: '22:00' },
-  { title: '23:00', value: '23:00' },
+export const timeSlots = Array.from({ length: 24 }, (_, i) => {
+  const date = new Date();
+  date.setHours(i, 0, 0, 0);
+  return {
+    title: date.toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }),
+    value: date.getHours().toString().padStart(2, '0'),
+  };
+});
+
+
+export const user = {
+  name: "Alice",
+  username: "brallis_",
+  avatar: "",
+  color: "yellow",
+  availableDates: [
+    {
+      isoDate: new Date().toISOString() ,
+      timeslots: []  
+      }
+  ]
+}
+
+
+export type Booking = {
+  id: string;
+  name: string;
+  avatar: string;
+  startTime: string;
+  endTime: string;
+  color: string;
+};
+
+export const bookings: Booking[] = [
+  {
+    id: '1',
+    name: 'Alice',
+    avatar: 'https://github.com/shadcn.png',
+    startTime: '16:00',
+    endTime: '18:00',
+    color: 'bg-yellow-200',
+  },
+  {
+    id: '2',
+    name: 'Elin',
+    avatar: 'https://github.com/shadcn.png',
+    startTime: '17:30',
+    endTime: '21:00',
+    color: 'bg-green-200',
+  },
+  {
+    id: '3',
+    name: 'Frida',
+    avatar: 'https://github.com/shadcn.png',
+    startTime: '19:00',
+    endTime: '22:00',
+    color: 'bg-purple-200',
+  },
 ];

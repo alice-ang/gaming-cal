@@ -1,8 +1,10 @@
-import { NavBar } from '@/components';
+import { NavBar, ThemeProvider } from '@/components';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { Toaster } from '@/components/ui/toaster';
+import { Dialog } from '@/components/ui/dialog';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,10 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={cn(inter.className, 'bg-slate-100 p-4')}>
-        <NavBar />
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className={cn(inter.className, '')}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Dialog>
+            <NavBar />
+            {children}
+            <Toaster />
+          </Dialog>
+        </ThemeProvider>
       </body>
     </html>
   );
