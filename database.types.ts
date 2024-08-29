@@ -72,21 +72,18 @@ export type Database = {
           color: string
           createdAt: string
           id: number
-          numOfEvents: number
           title: string
         }
         Insert: {
           color: string
           createdAt?: string
           id?: number
-          numOfEvents: number
           title: string
         }
         Update: {
           color?: string
           createdAt?: string
           id?: number
-          numOfEvents?: number
           title?: string
         }
         Relationships: []

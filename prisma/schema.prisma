@@ -16,9 +16,8 @@ model Calendar {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   title       String
-  numOfEvents Int
   color       String
-  events      Event[]
+  events      Event[] 
     @@schema("public")
 }
 

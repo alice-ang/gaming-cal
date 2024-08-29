@@ -1,4 +1,5 @@
 'use client';
+import { CreateCalendarForm } from '@/components';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -8,10 +9,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, Plus, Trash2 } from 'lucide-react';
+import { Calendar, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -84,8 +84,10 @@ export default function Home() {
                 <Link
                   key={calendar.id}
                   className="flex items-center justify-between mb-4"
-                  href={`/calendar/${calendar.id}`}
-                  as={`/calendar/${encodeURI(calendar.name)}`}
+                  href={{
+                    pathname: `/calendar/${calendar.id}`,
+                  }}
+                  as={`/calendar/${calendar.id}`}
                 >
                   <div className="flex items-center">
                     <div
@@ -112,16 +114,7 @@ export default function Home() {
           </CardContent>
           <Separator className="my-4" />
           <CardFooter>
-            <div className="flex w-full space-x-2">
-              <Input
-                placeholder="New calendar name"
-                value={newCalendarName}
-                onChange={(e) => setNewCalendarName(e.target.value)}
-              />
-              <Button onClick={addCalendar}>
-                <Plus className="mr-2 " size={16} /> Add Calendar
-              </Button>
-            </div>
+            <CreateCalendarForm />
           </CardFooter>
         </Card>
         <Card>

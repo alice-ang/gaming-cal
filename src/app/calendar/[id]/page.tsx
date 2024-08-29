@@ -7,7 +7,6 @@ const bookedDays = [
 ];
 
 export default function CalendarPage({ params }: { params: { id: string } }) {
-  console.log(params);
   return (
     <main className="p-4 constraints space-y-6 lg:space-y-6">
       {/* <LoginForm /> */}
