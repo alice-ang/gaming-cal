@@ -6,12 +6,14 @@ const bookedDays = [
   new Date(2024, 7, 11),
 ];
 
-export default function CalendarPage() {
+export default function CalendarPage({ params }: { params: { id: string } }) {
+  console.log(params);
   return (
     <main className="p-4 constraints space-y-6 lg:space-y-6">
       {/* <LoginForm /> */}
 
       {/* <CalendarEdit /> */}
+      <h1 className="text-3xl font-bold mb-6">{decodeURI(params.id)}</h1>
       <div>
         <Badge variant="success">All Available</Badge>
       </div>

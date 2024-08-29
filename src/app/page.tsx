@@ -1,5 +1,4 @@
 'use client';
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -10,10 +9,11 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Calendar, Plus, Trash2 } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
 
 type CalendarItem = {
   id: string;
@@ -81,9 +81,11 @@ export default function Home() {
           <CardContent>
             <ScrollArea className="h-[300px] w-full pr-4">
               {calendars.map((calendar) => (
-                <div
+                <Link
                   key={calendar.id}
                   className="flex items-center justify-between mb-4"
+                  href={`/calendar/${calendar.id}`}
+                  as={`/calendar/${encodeURI(calendar.name)}`}
                 >
                   <div className="flex items-center">
                     <div
@@ -101,10 +103,10 @@ export default function Home() {
                       size="icon"
                       onClick={() => removeCalendar(calendar.id)}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 size={16} />
                     </Button>
                   </div>
-                </div>
+                </Link>
               ))}
             </ScrollArea>
           </CardContent>
@@ -117,7 +119,7 @@ export default function Home() {
                 onChange={(e) => setNewCalendarName(e.target.value)}
               />
               <Button onClick={addCalendar}>
-                <Plus className="mr-2 h-4 w-4" /> Add Calendar
+                <Plus className="mr-2 " size={16} /> Add Calendar
               </Button>
             </div>
           </CardFooter>
