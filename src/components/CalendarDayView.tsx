@@ -13,6 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { timeSlots } from '@/lib/mock';
 import { Edit2, Trash2 } from 'lucide-react';
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 
@@ -28,10 +29,6 @@ type CalendarDayViewProps = {
   // currentDate: Date;
   initialBookings: Booking[];
 };
-const timeSlots = Array.from({ length: 24 }, (_, i) => {
-  return `${i.toString().padStart(2, '0')}:00`;
-});
-const quarterHours = ['00', '15', '30', '45'];
 
 export const CalendarDayView: FC<CalendarDayViewProps> = ({
   initialBookings,
@@ -54,29 +51,20 @@ export const CalendarDayView: FC<CalendarDayViewProps> = ({
     if (isDragging && timeGridRef.current) {
       const rect = timeGridRef.current.getBoundingClientRect();
       const y = e.clientY - rect.top;
-      const slotHeight = rect.height / (timeSlots.length * 4);
+      const slotHeight = rect.height / timeSlots.length;
       const slotIndex = Math.floor(y / slotHeight);
-      setDragEnd(Math.max(0, Math.min(slotIndex, timeSlots.length * 4 - 1)));
+      setDragEnd(Math.max(0, Math.min(slotIndex, timeSlots.length - 1)));
     }
   };
 
   const handleMouseUp = useCallback(() => {
     if (dragStart !== null && dragEnd !== null) {
-      const startHour = Math.floor(Math.min(dragStart, dragEnd) / 4);
-      const startMinute = (Math.min(dragStart, dragEnd) % 4) * 15;
-      const endHour = Math.floor((Math.max(dragStart, dragEnd) + 1) / 4);
-      const endMinute = ((Math.max(dragStart, dragEnd) + 1) % 4) * 15;
+      const startHour = Math.min(dragStart, dragEnd);
+      const endHour = Math.max(dragStart, dragEnd) + 1;
 
-      const startTime = `${startHour.toString().padStart(2, '0')}:${startMinute
-        .toString()
-        .padStart(2, '0')}`;
+      const startTime = `${startHour.toString().padStart(2, '0')}:00`;
       const endTime =
-        endHour === 24
-          ? '00:00'
-          : `${endHour.toString().padStart(2, '0')}:${endMinute
-              .toString()
-              .padStart(2, '0')}`;
-
+        endHour === 24 ? '00:00' : `${endHour.toString().padStart(2, '0')}:00`;
       if (editingBooking) {
         setBookings((prev) =>
           prev.map((booking) =>
@@ -137,30 +125,23 @@ export const CalendarDayView: FC<CalendarDayViewProps> = ({
 
   const getBookingStyle = (booking: Booking) => {
     const startHour = parseInt(booking.startTime.split(':')[0]);
-    const startMinute = parseInt(booking.startTime.split(':')[1]);
     const endHour = parseInt(booking.endTime.split(':')[0]);
-    const endMinute = parseInt(booking.endTime.split(':')[1]);
 
-    const startIndex = startHour * 4 + startMinute / 15;
-    const endIndex = endHour === 24 ? 24 * 4 : endHour * 4 + endMinute / 15;
+    const startIndex = startHour;
+    const endIndex = endHour === 0 ? 24 : endHour;
 
-    const top = `${(startIndex / (timeSlots.length * 4)) * 100}%`;
-    const height = `${
-      ((endIndex - startIndex) / (timeSlots.length * 4)) * 100
-    }%`;
+    const top = `${(startIndex / timeSlots.length) * 100}%`;
+    const height = `${((endIndex - startIndex) / timeSlots.length) * 100}%`;
     return { top, height };
   };
 
   const handleEditBooking = (booking: Booking) => {
     setEditingBooking(booking);
     const startHour = parseInt(booking.startTime.split(':')[0]);
-    const startMinute = parseInt(booking.startTime.split(':')[1]);
     const endHour = parseInt(booking.endTime.split(':')[0]);
-    const endMinute = parseInt(booking.endTime.split(':')[1]);
 
-    const startIndex = startHour * 4 + startMinute / 15;
-    const endIndex =
-      endHour === 24 ? 24 * 4 - 1 : endHour * 4 + endMinute / 15 - 1;
+    const startIndex = startHour;
+    const endIndex = endHour === 0 ? 23 : endHour - 1;
 
     setDragStart(startIndex);
     setDragEnd(endIndex);
@@ -182,11 +163,7 @@ export const CalendarDayView: FC<CalendarDayViewProps> = ({
 
   const hasAllUsersOverlapping = useCallback(
     (slotIndex: number) => {
-      const hour = Math.floor(slotIndex / 4);
-      const minute = (slotIndex % 4) * 15;
-      const time = `${hour.toString().padStart(2, '0')}:${minute
-        .toString()
-        .padStart(2, '0')}`;
+      const time = `${slotIndex.toString().padStart(2, '0')}:00`;
       const overlappingBookings = getOverlappingBookings(time);
 
       // Get unique user names from the bookings
@@ -235,19 +212,14 @@ export const CalendarDayView: FC<CalendarDayViewProps> = ({
           onMouseLeave={handleMouseUp}
         >
           {timeSlots.map((slot, index) => (
-            <div key={slot} className="relative select-none	">
-              <div className="flex items-center h-6 mb-1">
-                <div className="w-16 text-xs text-gray-500">{slot}</div>
+            <div key={slot.title} className="relative select-none	">
+              <div
+                className="flex items-center h-6 mb-1"
+                onMouseDown={() => handleMouseDown(index)}
+              >
+                <div className="w-16 text-xs text-gray-500">{slot.title}</div>
                 <div className="flex-1 border-t border-gray-200"></div>
               </div>
-              {quarterHours.map((quarter, qIndex) => (
-                <div
-                  key={`${slot}-${quarter}`}
-                  className="absolute left-16 right-0 h-6"
-                  style={{ top: `${qIndex * 6}px` }}
-                  onMouseDown={() => handleMouseDown(index * 4 + qIndex)}
-                ></div>
-              ))}
             </div>
           ))}
           {bookings?.map((booking) => {

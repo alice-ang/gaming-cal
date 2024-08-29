@@ -36,7 +36,7 @@ export const ShareCalendar: FC<DialogProps> = ({ ...props }) => {
   return (
     <Dialog {...props}>
       <DialogTrigger asChild>
-        <Button variant="secondary">
+        <Button>
           Send invites <SendHorizonal className="ml-2" size={18} />
         </Button>
       </DialogTrigger>
