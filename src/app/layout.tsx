@@ -1,10 +1,11 @@
 import { NavBar, ThemeProvider } from '@/components';
+import { Dialog } from '@/components/ui/dialog';
+import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
-import { Dialog } from '@/components/ui/dialog';
+import QueryClientContextProvider from '@/components/QueryClientContextProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,13 +22,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={cn(inter.className, '')}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <Dialog>
-            <NavBar />
-            {children}
-            <Toaster />
-          </Dialog>
-        </ThemeProvider>
+        <QueryClientContextProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <Dialog>
+              <NavBar />
+              {children}
+              <Toaster />
+            </Dialog>
+          </ThemeProvider>
+        </QueryClientContextProvider>
       </body>
     </html>
   );

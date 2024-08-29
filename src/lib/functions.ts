@@ -1,7 +1,7 @@
 "use server"
 
 import { PrismaClient } from '@prisma/client'
-import { Database ,Tables, Enums } from '../../database.types'
+import { Tables } from '../../database.types'
 
 const prisma = new PrismaClient()
 
@@ -23,20 +23,37 @@ export const  createCalendar = async(calendar: Pick<Tables<'Calendar'>, "title" 
 }
 
 
+
+
+
 export const fetchCalendars = async () => {
+    try {
+        const calendars  = await prisma.calendar.findMany({
+        orderBy: {
+            createdAt: 'desc'
+          }
+      })
+
+      return calendars;
+    } catch (error) {
+      console.error('Error fetching todos:', error)
+      throw error
+    }
+  }
+
+export const removeCalendar = async (calendarId: number) => {
   try {
-    const calendars = await prisma.calendar.findMany({
-      orderBy: {
-        createdAt: 'desc'
-      }
+    const deletedCalendar = await prisma.calendar.delete({
+      where: {
+        id: calendarId,
+      },
     });
-    console.log('Fetched calendars:', calendars);
-    return calendars ?? [];
+    console.log('Borttagen kalender:', deletedCalendar);
+    return deletedCalendar;
   } catch (error) {
-    console.error('Error fetching calendars:', error);
+    console.error('Fel vid borttagning av kalender:', error);
     throw error;
   } finally {
     await prisma.$disconnect();
   }
-}
-
+};
