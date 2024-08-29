@@ -1,6 +1,10 @@
 import { type ClassValue, clsx } from 'clsx';
 import { redirect } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+export const queryClient = new QueryClient();
+
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

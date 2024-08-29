@@ -1,4 +1,8 @@
-import React, { FC } from 'react';
+import { fetchCalendars } from '@/lib/functions';
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import { FC } from 'react';
+import { CreateCalendarForm } from './forms';
+import { MyCalendars } from './MyCalendars';
 import {
   Card,
   CardContent,
@@ -7,18 +11,10 @@ import {
   CardHeader,
   CardTitle,
 } from './ui/card';
-import { CreateCalendarForm } from './forms';
-import { MyCalendars } from './MyCalendars';
 import { Separator } from './ui/separator';
-import {
-  HydrationBoundary,
-  dehydrate,
-  QueryClient,
-} from '@tanstack/react-query';
-import { fetchCalendars } from '@/lib/functions';
+import { queryClient } from '@/lib/utils';
 
 export const CalendarDashboard: FC = async () => {
-  const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ['calendars'],
     queryFn: fetchCalendars,
@@ -37,7 +33,9 @@ export const CalendarDashboard: FC = async () => {
         </CardContent>
         <Separator className="my-4" />
         <CardFooter>
-          <CreateCalendarForm />
+          <HydrationBoundary state={dehydrate(queryClient)}>
+            <CreateCalendarForm />
+          </HydrationBoundary>
         </CardFooter>
       </Card>
       <Card>

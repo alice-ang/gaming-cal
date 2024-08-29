@@ -1,3 +1,4 @@
+import { SelectProps } from '@radix-ui/react-select';
 import { FC } from 'react';
 import {
   Select,
@@ -6,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import { SelectProps } from '@radix-ui/react-select';
 
 const colorOptions = [
   { value: 'red', label: 'Red' },

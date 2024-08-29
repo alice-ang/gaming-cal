@@ -12,10 +12,8 @@ export const  createCalendar = async(calendar: Pick<Tables<'Calendar'>, "title" 
       ...calendar
       },
     })
-    console.log('Created new calendar:', newCal)
     return newCal
   } catch (error) {
-    console.error('Error creating calendar:', error)
     throw error
   } finally {
     await prisma.$disconnect()
@@ -36,7 +34,6 @@ export const fetchCalendars = async () => {
 
       return calendars;
     } catch (error) {
-      console.error('Error fetching todos:', error)
       throw error
     }
   }
@@ -48,10 +45,8 @@ export const removeCalendar = async (calendarId: number) => {
         id: calendarId,
       },
     });
-    console.log('Borttagen kalender:', deletedCalendar);
     return deletedCalendar;
   } catch (error) {
-    console.error('Fel vid borttagning av kalender:', error);
     throw error;
   } finally {
     await prisma.$disconnect();
