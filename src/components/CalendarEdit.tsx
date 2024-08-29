@@ -1,5 +1,5 @@
 'use client';
-import { Edit, Send, Settings, Trash2, X } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -13,18 +13,16 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { DialogProps } from '@radix-ui/react-dialog';
-import { FC, useRef, useState } from 'react';
+import { FC } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 export const CalendarEdit: FC<DialogProps> = ({ ...props }) => {
-  const [copied, setCopied] = useState(false);
-  const linkInputRef = useRef<HTMLInputElement>(null);
-
   return (
     <Dialog {...props}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <Edit size={24} />
+        <Button variant="secondary">
+          <Edit className="mr-2" size={18} />
+          Edit calendar
         </Button>
       </DialogTrigger>
       <DialogContent className="">

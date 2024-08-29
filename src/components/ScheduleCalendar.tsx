@@ -1,6 +1,8 @@
 'use client';
-import { ChevronLeft, ChevronRight, CirclePlus, Trash2, X } from 'lucide-react';
+import { bookings } from '@/lib/mock';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { FC, useState } from 'react';
+import { CalendarDayView } from './CalendarDayView';
 import { TimeSlot } from './TimeSlot';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
@@ -13,10 +15,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from './ui/dialog';
-import { CalendarDayView } from './CalendarDayView';
-import { ScrollArea } from './ui/scroll-area';
-import { Avatar } from './ui/avatar';
-import { bookings } from '@/lib/mock';
 
 type TimeSlot = {
   start: string;
@@ -38,25 +36,6 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
       setTimeSlots([]);
       setOpen(true);
     }
-  };
-
-  const handleAddTimeSlot = () => {
-    setTimeSlots([...timeSlots, { start: '', end: '' }]);
-  };
-
-  const handleRemoveTimeSlot = (index: number) => {
-    const newTimeSlots = timeSlots.filter((_, i) => i !== index);
-    setTimeSlots(newTimeSlots);
-  };
-
-  const handleTimeChange = (
-    index: number,
-    field: 'start' | 'end',
-    value: string
-  ) => {
-    const newTimeSlots = [...timeSlots];
-    newTimeSlots[index][field] = value;
-    setTimeSlots(newTimeSlots);
   };
 
   const handlePrevDay = () => {
@@ -83,12 +62,12 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
         }}
       />
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent closeButton={false}>
           <DialogHeader className="flex flex-row items-center justify-between">
             <Button variant="ghost" size="icon" onClick={handlePrevDay}>
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft />
             </Button>
-            <div className="text-center space-y-1">
+            <div className="text-center">
               <DialogTitle>
                 {date?.toLocaleDateString('en-US', {
                   weekday: 'short',
@@ -100,14 +79,19 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
               <DialogDescription>Select time slots</DialogDescription>
             </div>
             <Button variant="ghost" size="icon" onClick={handleNextDay}>
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight />
             </Button>
           </DialogHeader>
-          <CalendarDayView currentDate={date} initialBookings={bookings} />
+          <CalendarDayView initialBookings={bookings} />
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" onClick={() => console.log(timeSlots)}>
-                Save slots
+              <Button
+                type="button"
+                onClick={() => console.log(timeSlots)}
+                className="w-full"
+                size="lg"
+              >
+                Save
               </Button>
             </DialogClose>
           </DialogFooter>

@@ -1,7 +1,11 @@
 'use client';
 
-import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Tooltip,
@@ -9,99 +13,310 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { Booking, timeSlots } from '@/lib/mock';
-import { Plus } from 'lucide-react';
-import { FC, useState } from 'react';
+import { Edit2, Trash2 } from 'lucide-react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 
-type CalendarDayViewProps = {
-  currentDate: Date;
-  initialBookings: Booking[];
+type Booking = {
+  id: string;
+  name: string;
+  startTime: string;
+  endTime: string;
+  color: string;
 };
 
+type CalendarDayViewProps = {
+  // currentDate: Date;
+  initialBookings: Booking[];
+};
+const timeSlots = Array.from({ length: 24 }, (_, i) => {
+  return `${i.toString().padStart(2, '0')}:00`;
+});
+const quarterHours = ['00', '15', '30', '45'];
+
 export const CalendarDayView: FC<CalendarDayViewProps> = ({
-  currentDate,
   initialBookings,
 }) => {
   const [bookings, setBookings] = useState<Booking[]>(initialBookings);
+  const [dragStart, setDragStart] = useState<number | null>(null);
+  const [dragEnd, setDragEnd] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const timeGridRef = useRef<HTMLDivElement>(null);
 
-  const handleAddBooking = (slot: string) => {
-    const hasOverlappingBooking = bookings.some(
-      (booking) =>
-        (slot >= booking.startTime && slot < booking.endTime) ||
-        (booking.startTime >= slot &&
-          booking.startTime <
-            new Date(
-              new Date(`2000-01-01T${slot}`).getTime() + 60 * 60 * 1000
-            ).toLocaleTimeString('sv-SE', {
-              hour: '2-digit',
-              minute: '2-digit',
-            }))
-    );
+  const handleMouseDown = (index: number) => {
+    setDragStart(index);
+    setDragEnd(index);
+    setIsDragging(true);
+    setEditingBooking(null);
+  };
 
-    if (hasOverlappingBooking) {
-      alert("Ypu've already booked this slot");
-      return;
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && timeGridRef.current) {
+      const rect = timeGridRef.current.getBoundingClientRect();
+      const y = e.clientY - rect.top;
+      const slotHeight = rect.height / (timeSlots.length * 4);
+      const slotIndex = Math.floor(y / slotHeight);
+      setDragEnd(Math.max(0, Math.min(slotIndex, timeSlots.length * 4 - 1)));
     }
-    const newBooking: Booking = {
-      id: Date.now().toString(),
-      name: 'Alice A',
-      avatar: 'https://github.com/shadcn.png',
-      startTime: slot,
-      endTime: new Date(
-        new Date(`2000-01-01T${slot}`).getTime() + 60 * 60 * 1000
-      ).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }),
-      color: 'bg-blue-200',
-    };
-    setBookings((prev) => [...prev, newBooking]);
   };
 
-  const getBookingsForSlot = (slot: string) => {
-    return bookings.filter(
-      (booking) => booking.startTime <= slot && slot < booking.endTime
-    );
+  const handleMouseUp = useCallback(() => {
+    if (dragStart !== null && dragEnd !== null) {
+      const startHour = Math.floor(Math.min(dragStart, dragEnd) / 4);
+      const startMinute = (Math.min(dragStart, dragEnd) % 4) * 15;
+      const endHour = Math.floor((Math.max(dragStart, dragEnd) + 1) / 4);
+      const endMinute = ((Math.max(dragStart, dragEnd) + 1) % 4) * 15;
+
+      const startTime = `${startHour.toString().padStart(2, '0')}:${startMinute
+        .toString()
+        .padStart(2, '0')}`;
+      const endTime =
+        endHour === 24
+          ? '00:00'
+          : `${endHour.toString().padStart(2, '0')}:${endMinute
+              .toString()
+              .padStart(2, '0')}`;
+
+      if (editingBooking) {
+        setBookings((prev) =>
+          prev.map((booking) =>
+            booking.id === editingBooking.id
+              ? { ...booking, startTime, endTime }
+              : booking
+          )
+        );
+        setEditingBooking(null);
+      } else {
+        const newBooking: Booking = {
+          id: Date.now().toString(),
+          name: 'You',
+          startTime,
+          endTime,
+          color: 'bg-orange-200',
+        };
+        setBookings((prev) => [...prev, newBooking]);
+      }
+    }
+    setIsDragging(false);
+    setDragStart(null);
+    setDragEnd(null);
+  }, [
+    dragStart,
+    dragEnd,
+    editingBooking,
+    setBookings,
+    setEditingBooking,
+    setIsDragging,
+    setDragStart,
+    setDragEnd,
+  ]);
+
+  useEffect(() => {
+    const handleGlobalMouseUp = () => {
+      if (isDragging) {
+        handleMouseUp();
+      }
+    };
+
+    window.addEventListener('mouseup', handleGlobalMouseUp);
+    return () => {
+      window.removeEventListener('mouseup', handleGlobalMouseUp);
+    };
+  }, [isDragging, dragStart, dragEnd, handleMouseUp]);
+
+  const getDraggableStyle = () => {
+    if (dragStart === null || dragEnd === null) return {};
+    const top = `${
+      (Math.min(dragStart, dragEnd) / (timeSlots.length * 4)) * 100
+    }%`;
+    const height = `${
+      ((Math.abs(dragEnd - dragStart) + 1) / (timeSlots.length * 4)) * 100
+    }%`;
+    return { top, height };
   };
+
+  const getBookingStyle = (booking: Booking) => {
+    const startHour = parseInt(booking.startTime.split(':')[0]);
+    const startMinute = parseInt(booking.startTime.split(':')[1]);
+    const endHour = parseInt(booking.endTime.split(':')[0]);
+    const endMinute = parseInt(booking.endTime.split(':')[1]);
+
+    const startIndex = startHour * 4 + startMinute / 15;
+    const endIndex = endHour === 24 ? 24 * 4 : endHour * 4 + endMinute / 15;
+
+    const top = `${(startIndex / (timeSlots.length * 4)) * 100}%`;
+    const height = `${
+      ((endIndex - startIndex) / (timeSlots.length * 4)) * 100
+    }%`;
+    return { top, height };
+  };
+
+  const handleEditBooking = (booking: Booking) => {
+    setEditingBooking(booking);
+    const startHour = parseInt(booking.startTime.split(':')[0]);
+    const startMinute = parseInt(booking.startTime.split(':')[1]);
+    const endHour = parseInt(booking.endTime.split(':')[0]);
+    const endMinute = parseInt(booking.endTime.split(':')[1]);
+
+    const startIndex = startHour * 4 + startMinute / 15;
+    const endIndex =
+      endHour === 24 ? 24 * 4 - 1 : endHour * 4 + endMinute / 15 - 1;
+
+    setDragStart(startIndex);
+    setDragEnd(endIndex);
+    setIsDragging(true);
+  };
+
+  const handleDeleteBooking = (bookingId: string) => {
+    setBookings((prev) => prev.filter((booking) => booking.id !== bookingId));
+  };
+
+  const getOverlappingBookings = useCallback(
+    (time: string) => {
+      return bookings?.filter(
+        (booking) => booking.startTime <= time && time < booking.endTime
+      );
+    },
+    [bookings]
+  );
+
+  const hasAllUsersOverlapping = useCallback(
+    (slotIndex: number) => {
+      const hour = Math.floor(slotIndex / 4);
+      const minute = (slotIndex % 4) * 15;
+      const time = `${hour.toString().padStart(2, '0')}:${minute
+        .toString()
+        .padStart(2, '0')}`;
+      const overlappingBookings = getOverlappingBookings(time);
+
+      // Get unique user names from the bookings
+      const uniqueUsers = new Set(bookings.map((booking) => booking.name));
+
+      // Check if the number of overlapping bookings equals the number of unique users
+      return (
+        overlappingBookings.length === uniqueUsers.size &&
+        overlappingBookings.length > 1
+      );
+    },
+    [bookings, getOverlappingBookings]
+  );
+
+  const findOverlappingPeriods = useCallback(() => {
+    const periods: { start: number; end: number }[] = [];
+    let currentPeriod: { start: number; end: number } | null = null;
+
+    for (let i = 0; i < timeSlots.length * 4; i++) {
+      if (hasAllUsersOverlapping(i)) {
+        if (!currentPeriod) {
+          currentPeriod = { start: i, end: i };
+        } else {
+          currentPeriod.end = i;
+        }
+      } else if (currentPeriod) {
+        periods.push(currentPeriod);
+        currentPeriod = null;
+      }
+    }
+
+    if (currentPeriod) {
+      periods.push(currentPeriod);
+    }
+
+    return periods;
+  }, [hasAllUsersOverlapping]);
 
   return (
-    <ScrollArea className="h-[400px]">
-      <div className="p-4">
-        {timeSlots.map((slot) => {
-          const slotBookings = getBookingsForSlot(slot.title);
-          return (
-            <div key={slot.title} className="flex items-center mb-2">
-              <div className="w-16 text-sm text-gray-500">{slot.title}</div>
-              <div className="flex-1 h-12 relative">
-                <div className="absolute inset-0 flex items-center space-x-1 border-b border-muted">
-                  {slotBookings.map((booking) => (
-                    <TooltipProvider key={booking.id}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Avatar className={`h-8 w-8 ${booking.color}`}>
-                            <img src={booking.avatar} alt={booking.name} />
-                          </Avatar>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{booking.name}</p>
-                          <p>
-                            {booking.startTime} - {booking.endTime}
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  ))}
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 rounded-full"
-                    onClick={() => handleAddBooking(slot.title)}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
+    <div className="w-full rounded-lg overflow-hidden">
+      <ScrollArea>
+        <div
+          className="relative"
+          ref={timeGridRef}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseUp}
+        >
+          {timeSlots.map((slot, index) => (
+            <div key={slot} className="relative select-none	">
+              <div className="flex items-center h-6 mb-1">
+                <div className="w-16 text-xs text-gray-500">{slot}</div>
+                <div className="flex-1 border-t border-gray-200"></div>
               </div>
+              {quarterHours.map((quarter, qIndex) => (
+                <div
+                  key={`${slot}-${quarter}`}
+                  className="absolute left-16 right-0 h-6"
+                  style={{ top: `${qIndex * 6}px` }}
+                  onMouseDown={() => handleMouseDown(index * 4 + qIndex)}
+                ></div>
+              ))}
             </div>
-          );
-        })}
-      </div>
-    </ScrollArea>
+          ))}
+          {bookings?.map((booking) => {
+            return (
+              <Popover key={booking.id}>
+                <PopoverTrigger asChild>
+                  <div
+                    className={`absolute left-16 right-4 ${booking.color} rounded-md flex items-center justify-between text-xs px-2 cursor-pointer`}
+                    style={getBookingStyle(booking)}
+                  >
+                    <span>{booking.name}</span>
+                    <span>
+                      {booking.startTime} - {booking.endTime}
+                    </span>
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent className="w-40">
+                  <div className="flex flex-col space-y-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEditBooking(booking)}
+                    >
+                      <Edit2 className="mr-2 h-4 w-4" />
+                      Edit
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDeleteBooking(booking.id)}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            );
+          })}
+          {findOverlappingPeriods().map((period, index) => {
+            const startTime = `${Math.floor(period.start / 4)
+              .toString()
+              .padStart(2, '0')}:${((period.start % 4) * 15)
+              .toString()
+              .padStart(2, '0')}`;
+            const endTime = `${Math.floor((period.end + 1) / 4)
+              .toString()
+              .padStart(2, '0')}:${(((period.end + 1) % 4) * 15)
+              .toString()
+              .padStart(2, '0')}`;
+            const style = getBookingStyle({ startTime, endTime } as Booking);
+            return (
+              <div
+                key={index}
+                className="absolute left-16 right-4 bg-red-500 opacity-50 z-20"
+                style={style}
+              ></div>
+            );
+          })}
+          {isDragging && (
+            <div
+              className="absolute left-16 right-4 bg-orange-200 opacity-50 rounded-md flex items-center justify-center"
+              style={getDraggableStyle()}
+            >
+              {editingBooking ? 'Editing' : 'New Booking'}
+            </div>
+          )}
+        </div>
+      </ScrollArea>
+    </div>
   );
 };
