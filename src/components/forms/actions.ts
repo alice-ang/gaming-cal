@@ -30,6 +30,7 @@ export async function signup(formdata: FormData) {
   const password = formdata.get('password') as string;
 
   const data = {
+    display_name: 'test',
     email: email,
     password: password,
   };

@@ -1,5 +1,5 @@
 'use client';
-import { CirclePlus, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CirclePlus, Trash2, X } from 'lucide-react';
 import { FC, useState } from 'react';
 import { TimeSlot } from './TimeSlot';
 import { Button } from './ui/button';
@@ -14,6 +14,9 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import { CalendarDayView } from './CalendarDayView';
+import { ScrollArea } from './ui/scroll-area';
+import { Avatar } from './ui/avatar';
+import { bookings } from '@/lib/mock';
 
 type TimeSlot = {
   start: string;
@@ -23,7 +26,7 @@ type TimeSlot = {
 export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
   bookedDays,
 }) => {
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date>(new Date());
   const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([
     { start: '', end: '' },
   ]);
@@ -56,6 +59,14 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
     setTimeSlots(newTimeSlots);
   };
 
+  const handlePrevDay = () => {
+    setDate((prev) => new Date(prev.setDate(prev.getDate() - 1)));
+  };
+
+  const handleNextDay = () => {
+    setDate((prev) => new Date(prev.setDate(prev.getDate() + 1)));
+  };
+
   return (
     <div>
       <Calendar
@@ -63,67 +74,45 @@ export const ScheduleCalendar: FC<{ bookedDays: Date[] }> = ({
         mode="single"
         selected={date}
         onSelect={handleDateSelect}
-        className="rounded-md border max-w-4xl mx-auto bg-background"
+        className="rounded-md border bg-background"
         modifiers={{
           booked: bookedDays,
         }}
         modifiersClassNames={{
-          booked: 'bg-green-100',
+          booked: 'bg-success text-success-foreground',
         }}
       />
-      {/* <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>{date?.toDateString()}</DialogTitle>
-            <DialogDescription>Select time slots</DialogDescription>
-          </DialogHeader>
-        <div className="space-y-2">
-            {timeSlots.map((slot, index) => (
-              <div className="flex flex-row justify-between" key={index}>
-                <div className="flex flex-row items-center space-x-4">
-                  <TimeSlot
-                    onValueChange={(value) =>
-                      handleTimeChange(index, 'start', value)
-                    }
-                  />
-                  <p>to</p>{' '}
-                  <TimeSlot
-                    type="end"
-                    startTime={timeSlots[0]?.['start']}
-                    onValueChange={(value) =>
-                      handleTimeChange(index, 'end', value)
-                    }
-                  />
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleRemoveTimeSlot(index)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div> 
-
-
-          <DialogFooter>
-            <div className="flex flex-row justify-between w-full">
-              <Button
-                variant="outline"
-                className="gap-2"
-                onClick={handleAddTimeSlot}
-              >
-                <CirclePlus size={16} />
-                Add time slot
-              </Button>
-              <DialogClose asChild>
-                <Button type="button">Save changes</Button>
-              </DialogClose>
+          <DialogHeader className="flex flex-row items-center justify-between">
+            <Button variant="ghost" size="icon" onClick={handlePrevDay}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <div className="text-center space-y-1">
+              <DialogTitle>
+                {date?.toLocaleDateString('en-US', {
+                  weekday: 'short',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </DialogTitle>
+              <DialogDescription>Select time slots</DialogDescription>
             </div>
+            <Button variant="ghost" size="icon" onClick={handleNextDay}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </DialogHeader>
+          <CalendarDayView currentDate={date} initialBookings={bookings} />
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" onClick={() => console.log(timeSlots)}>
+                Save slots
+              </Button>
+            </DialogClose>
           </DialogFooter>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
     </div>
   );
 };

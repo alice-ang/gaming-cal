@@ -52,50 +52,7 @@ export const LoginForm: FC = () => {
 
   return (
     <Form {...form}>
-      <form
-        className="space-y-8"
-        action={async (formData) => {
-          await signup(formData).then((res) => console.log(res));
-        }}
-      >
-        {/* <Tabs defaultValue="sign-in">
-          <TabsList className=" w-full">
-            <TabsTrigger
-              value="sign-in"
-              className="w-full"
-              onClick={() => setIsSignIn(true)}
-            >
-              Sign in
-            </TabsTrigger>
-            <TabsTrigger
-              value="sign-up"
-              className="w-full"
-              onClick={() => setIsSignIn(false)}
-            >
-              Sign up
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="signin">
-            Make changes to your account here.
-          </TabsContent>
-          <TabsContent value="sign-up"></TabsContent>
-        </Tabs> */}
-        {/* <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="enter username" {...field} />
-              </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
+      <form className="space-y-8 ">
         <FormField
           control={form.control}
           name="email"
@@ -144,9 +101,14 @@ export const LoginForm: FC = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
-          Continue
-        </Button>
+        <div className="space-y-4">
+          <Button variant="secondary" className="w-full" formAction={signup}>
+            Sign up
+          </Button>
+          <Button className="w-full" formAction={login}>
+            Sign in
+          </Button>
+        </div>
       </form>
     </Form>
   );
