@@ -1,18 +1,10 @@
-import { CalendarEdit, ScheduleCalendar, ShareCalendar } from '@/components';
-const bookedDays = [
-  new Date(2024, 7, 8),
-  new Date(2024, 7, 9),
-  new Date(2024, 7, 11),
-];
+import { CalendarDashboard } from '@/components';
 
-export default function Home() {
+export default async function Home() {
   return (
-    <main className="p-4 constraints">
-      {/* <LoginForm /> */}
-
-      <CalendarEdit />
-      <ScheduleCalendar bookedDays={bookedDays} />
-      <ShareCalendar />
-    </main>
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6">Calendar Dashboard</h1>
+      <CalendarDashboard />
+    </div>
   );
 }

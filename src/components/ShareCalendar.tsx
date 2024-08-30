@@ -1,5 +1,5 @@
 'use client';
-import { Check, Copy, Send } from 'lucide-react';
+import { Check, Copy, Send, SendHorizonal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -36,8 +36,8 @@ export const ShareCalendar: FC<DialogProps> = ({ ...props }) => {
   return (
     <Dialog {...props}>
       <DialogTrigger asChild>
-        <Button variant="secondary">
-          Share Calendar <Send className="ml-2" size={18} />
+        <Button>
+          Send invites <SendHorizonal className="ml-2" size={18} />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
