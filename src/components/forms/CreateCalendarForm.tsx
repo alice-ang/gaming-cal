@@ -1,7 +1,8 @@
 'use client';
 
-import { createCalendar } from '@/lib/functions';
+import { createCalendar } from '@/lib/data/actions';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
@@ -22,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const colorOptions = [
   { value: 'red', label: 'Red' },
@@ -46,9 +46,9 @@ const formSchema = z.object({
     }
   ),
 });
+
 export const CreateCalendarForm: FC = () => {
   const queryClient = useQueryClient();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,15 +56,15 @@ export const CreateCalendarForm: FC = () => {
     },
   });
 
-  const createCalendarMutation = useMutation({
+  const { mutate, isPending, error } = useMutation({
     mutationFn: createCalendar,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['calendars'] });
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['calendars'] });
     },
   });
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    createCalendarMutation.mutate({
+    mutate({
       title: values.name,
       color: values.color,
     });

@@ -28,7 +28,7 @@ supabase init
 supabase start
 
 # Push db changes
-npx supabase db push
+supabase db push
 
 ```
 

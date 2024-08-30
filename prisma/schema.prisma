@@ -13,7 +13,7 @@ datasource db {
 
 
 model Calendar {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
   title       String
   color       String
@@ -22,12 +22,12 @@ model Calendar {
 }
 
 model Event {
-  id          Int       @id @default(autoincrement())
+  id          String   @id @default(uuid())
   title       String
   date        DateTime
   description String?
   calendar    Calendar  @relation(fields: [calendarId], references: [id])
-  calendarId  Int
+  calendarId  String
   timeSlots   TimeSlot[]
   @@schema("public")
 }
@@ -38,6 +38,6 @@ model TimeSlot {
   endTime   DateTime
   isBooked  Boolean  @default(false)
   event     Event    @relation(fields: [eventId], references: [id])
-  eventId   Int
+  eventId   String
   @@schema("public")
 }

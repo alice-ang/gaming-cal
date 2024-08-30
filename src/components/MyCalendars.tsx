@@ -1,32 +1,23 @@
 'use client';
-import { fetchCalendars, removeCalendar } from '@/lib/functions';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useGetCalendars } from '@/lib/data';
+import { removeCalendar } from '@/lib/data/actions';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { FC } from 'react';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
-import { queryClient } from '@/lib/utils';
 
 export const MyCalendars: FC = () => {
-  const {
-    data: calendars,
-    error,
-    isFetched,
-  } = useQuery({
-    queryKey: ['calendars'],
-    queryFn: fetchCalendars,
-  });
-  const deleteMutation = useMutation({
+  const queryClient = useQueryClient();
+  const { data: calendars } = useGetCalendars();
+  const { mutateAsync: deleteCalendarMutation } = useMutation({
     mutationFn: removeCalendar,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['calendars'] });
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['calendars'] });
     },
   });
-
-  if (!calendars) {
-    return <h1>No calendars</h1>;
-  }
 
   return (
     <ScrollArea className="max-h-screen w-full pr-4">
@@ -49,11 +40,15 @@ export const MyCalendars: FC = () => {
             <span>{calendar.title}</span>
           </Link>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-500 mr-4">X events</span>
+            <span className="text-sm text-gray-500 mr-4">
+              {calendar.id} events
+            </span>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => deleteMutation.mutate(calendar.id)}
+              onClick={async () => {
+                await deleteCalendarMutation(calendar.id);
+              }}
             >
               <Trash2 size={16} />
             </Button>
