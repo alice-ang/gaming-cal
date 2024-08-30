@@ -1,46 +1,46 @@
-'use server';
+'use server'
 
-import { createClient } from '@/lib/supbase/server';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supbase/server'
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 
-export async function login(formdata: FormData) {
-  const supabase = createClient();
 
-  const email = formdata.get('email') as string;
-  const password = formdata.get('password') as string;
+export async function login(formData: FormData) {
+  const supabase = createClient()
+
+  
   const data = {
-    email: email,
-    password: password,
-  };
-
-  const { error } = await supabase.auth.signInWithPassword(data);
-
-  if (error) {
-    console.error(error);
+    email: formData.get('email') as string,
+    password: formData.get('password') as string,
   }
 
-  revalidatePath('/', 'layout');
-  redirect('/');
+  const { error } = await supabase.auth.signInWithPassword(data)
+
+  if (error) {
+    redirect('/login?message=Error authenticating user')
+
+  }
+
+  revalidatePath('/', 'layout')
+  redirect('/')
 }
 
-export async function signup(formdata: FormData) {
-  const supabase = createClient();
-  const email = formdata.get('email') as string;
-  const password = formdata.get('password') as string;
-
+export async function signup(formData: FormData) {
+  const supabase = createClient()
+  
+  
   const data = {
-    display_name: 'test',
-    email: email,
-    password: password,
-  };
+    email: formData.get('email') as string,
+    password: formData.get('password') as string,
+  }
+  console.log(data)
 
-  const { error } = await supabase.auth.signUp(data);
+  const { error } = await supabase.auth.signUp(data)
 
   if (error) {
-    console.error(error);
+    redirect('/login?message=Error signing up')
   }
 
-  revalidatePath('/', 'layout');
-  redirect('/');
+  revalidatePath('/', 'layout')
+  redirect('/')
 }

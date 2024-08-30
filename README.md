@@ -30,6 +30,8 @@ supabase start
 # Push db changes
 supabase db push
 
+# LInk
+supabase link --project-ref <project-id>
 ```
 
 ### Generating typescript types

@@ -1,4 +1,3 @@
-import { fetchCalendars } from '@/lib/data/actions';
 import {
   dehydrate,
   HydrationBoundary,
@@ -18,12 +17,6 @@ import {
 import { Separator } from './ui/separator';
 
 export const CalendarDashboard: FC = async () => {
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ['calendars'],
-    queryFn: fetchCalendars,
-  });
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <Card className="col-span-1 md:col-span-2">
@@ -32,9 +25,7 @@ export const CalendarDashboard: FC = async () => {
           <CardDescription>Manage and create new calendars</CardDescription>
         </CardHeader>
         <CardContent>
-          <HydrationBoundary state={dehydrate(queryClient)}>
-            <MyCalendars />
-          </HydrationBoundary>
+          <MyCalendars />
         </CardContent>
 
         <Separator className="my-4" />

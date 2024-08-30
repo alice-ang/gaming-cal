@@ -1,6 +1,5 @@
 'use client';
 
-import { createCalendar } from '@/lib/data/actions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
@@ -56,18 +55,8 @@ export const CreateCalendarForm: FC = () => {
     },
   });
 
-  const { mutate, isPending, error } = useMutation({
-    mutationFn: createCalendar,
-
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['calendars'] });
-    },
-  });
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    mutate({
-      title: values.name,
-      color: values.color,
-    });
+    console.log(values);
   }
 
   return (
