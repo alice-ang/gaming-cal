@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
-import { login, signup } from './actions';
 import { useToast } from '../ui/use-toast';
 
 export const formSchema = z.object({
@@ -102,12 +101,10 @@ export const LoginForm: FC = () => {
           )}
         />
         <div className="space-y-4">
-          <Button variant="secondary" className="w-full" formAction={signup}>
+          <Button variant="secondary" className="w-full">
             Sign up
           </Button>
-          <Button className="w-full" formAction={login}>
-            Sign in
-          </Button>
+          <Button className="w-full">Sign in</Button>
         </div>
       </form>
     </Form>
