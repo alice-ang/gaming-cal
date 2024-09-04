@@ -52,7 +52,6 @@ function Calendar({
         day_range_middle:
           'aria-selected:bg-accent aria-selected:text-accent-foreground',
         day_hidden: 'invisible',
-
         weeknumber: 'self-center text-sm text-red-500',
         ...classNames,
       }}

@@ -7,12 +7,6 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
 import { timeSlots } from '@/lib/mock';
 import { Edit2, Trash2 } from 'lucide-react';
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
@@ -246,9 +240,11 @@ export const CalendarDayView: FC<CalendarDayViewProps> = ({
                       <Edit2 className="mr-2 h-4 w-4" />
                       Edit
                     </Button>
+
                     <Button
-                      variant="destructive"
-                      size="sm"
+                      variant="ghost"
+                      size="icon"
+                      className="hover:bg-red-100 hover:text-red-500"
                       onClick={() => handleDeleteBooking(booking.id)}
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
