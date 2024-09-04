@@ -15,6 +15,15 @@ import {
 import { DialogProps } from '@radix-ui/react-dialog';
 import { FC } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import { Separator } from '@radix-ui/react-select';
+import { DatePickerRange } from './DatePickerRange';
 
 export const CalendarEdit: FC<DialogProps> = ({ ...props }) => {
   return (
@@ -33,37 +42,7 @@ export const CalendarEdit: FC<DialogProps> = ({ ...props }) => {
           </DialogDescription>
         </DialogHeader>
         <div>
-          <div className="space-y-4">
-            <h3 className="font-semibold">Participants</h3>
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div
-                className="flex flex-row items-center gap-4 justify-between "
-                key={i}
-              >
-                <div className="flex items-center gap-4 ">
-                  <Avatar className="hidden h-9 w-9 sm:flex">
-                    <AvatarImage src="/avatars/03.png" alt="Avatar" />
-                    <AvatarFallback>IN</AvatarFallback>
-                  </Avatar>
-                  <div className="grid gap-1">
-                    <p className="text-sm font-medium leading-none">
-                      Isabella Nguyen
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      isabella.nguyen@email.com
-                    </p>
-                  </div>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hover:bg-red-100 hover:text-red-500"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
+          <DatePickerRange />
         </div>
         <DialogFooter>
           <DialogClose asChild>

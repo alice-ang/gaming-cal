@@ -1,9 +1,10 @@
 import { CalendarEdit, ScheduleCalendar, ShareCalendar } from '@/components';
 import { Badge } from '@/components/ui/badge';
+import { initialFriendsAvailability } from '@/lib/mock';
 const bookedDays = [
-  new Date(2024, 7, 8),
-  new Date(2024, 7, 9),
-  new Date(2024, 7, 11),
+  new Date(2024, 8, 8),
+  new Date(2024, 8, 9),
+  new Date(2024, 8, 11),
 ];
 
 export default async function CalendarPage({
@@ -16,12 +17,12 @@ export default async function CalendarPage({
       {/* <LoginForm /> */}
 
       {/* <CalendarEdit /> */}
-      <h1 className="text-3xl font-bold mb-6">Tiele</h1>
+      <h1 className="text-3xl font-bold mb-6">{params.id}</h1>
       <div className="space-x-4">
         <Badge variant="success">All Available</Badge>
         <Badge variant="secondary">Your slots</Badge>
       </div>
-      <ScheduleCalendar bookedDays={bookedDays} />
+      <ScheduleCalendar availability={initialFriendsAvailability} />
       <div className="flex items-center flex-row justify-between">
         <CalendarEdit />
 

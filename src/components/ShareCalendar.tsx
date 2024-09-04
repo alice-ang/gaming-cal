@@ -1,5 +1,5 @@
 'use client';
-import { Check, Copy, Send, SendHorizonal } from 'lucide-react';
+import { Check, Copy, SendHorizonal } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -16,6 +16,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { DialogProps } from '@radix-ui/react-dialog';
 import { FC, useRef, useState } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import { Separator } from './ui/separator';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 export const ShareCalendar: FC<DialogProps> = ({ ...props }) => {
   const [copied, setCopied] = useState(false);
@@ -72,6 +81,81 @@ export const ShareCalendar: FC<DialogProps> = ({ ...props }) => {
               </div>
             )}
           </Button>
+        </div>
+        <Separator className="my-2" />
+        <div className="space-y-4">
+          <h4 className="text-sm font-medium">People with access</h4>
+          <div className="grid gap-6">
+            <div className="flex items-center justify-between space-x-4">
+              <div className="flex items-center space-x-4">
+                <Avatar>
+                  <AvatarImage src="/avatars/03.png" />
+                  <AvatarFallback>OM</AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-sm font-medium leading-none">
+                    Olivia Martin
+                  </p>
+                  <p className="text-sm text-muted-foreground">m@example.com</p>
+                </div>
+              </div>
+              <Select defaultValue="edit">
+                <SelectTrigger className="ml-auto w-[110px]">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="edit">Can edit</SelectItem>
+                  <SelectItem value="view">Can view</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center justify-between space-x-4">
+              <div className="flex items-center space-x-4">
+                <Avatar>
+                  <AvatarImage src="/avatars/05.png" />
+                  <AvatarFallback>IN</AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-sm font-medium leading-none">
+                    Isabella Nguyen
+                  </p>
+                  <p className="text-sm text-muted-foreground">b@example.com</p>
+                </div>
+              </div>
+              <Select defaultValue="view">
+                <SelectTrigger className="ml-auto w-[110px]">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="edit">Can edit</SelectItem>
+                  <SelectItem value="view">Can view</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-center justify-between space-x-4">
+              <div className="flex items-center space-x-4">
+                <Avatar>
+                  <AvatarImage src="/avatars/01.png" />
+                  <AvatarFallback>SD</AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-sm font-medium leading-none">
+                    Sofia Davis
+                  </p>
+                  <p className="text-sm text-muted-foreground">p@example.com</p>
+                </div>
+              </div>
+              <Select defaultValue="view">
+                <SelectTrigger className="ml-auto w-[110px]">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="edit">Can edit</SelectItem>
+                  <SelectItem value="view">Can view</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </div>
         <DialogFooter className="sm:justify-start">
           <DialogClose asChild>
