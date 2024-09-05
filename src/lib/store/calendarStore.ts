@@ -1,6 +1,6 @@
+import { supabase } from '@/lib/supabase/client';
 import { create } from 'zustand';
 import { Calendar } from '../mock';
-import { createClient, supabase } from '@/lib/supabase/client';
 
 
 type CalendarStore =  {
@@ -10,9 +10,7 @@ type CalendarStore =  {
   fetchCalendars: () => Promise<void>;
   addCalendar: (calendar: Omit<Calendar, 'id'>) => Promise<void>;
     deleteCalendar: (id: string) => Promise<void>;
-
 }
-
 
 export const useCalendarStore = create<CalendarStore>((set) => ({
   calendars: [],
@@ -40,7 +38,10 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
     .insert([
       {  title, color }
     ])
-    .select('');
+    .select('id, title, color').single();
+
+
+
       set((state) => ({ 
         calendars: [...state.calendars, addedCalendar],
         error: null 
