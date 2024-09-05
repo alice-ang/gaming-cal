@@ -1,14 +1,25 @@
 'use client';
 import { Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
-import { FC } from 'react';
-import { Button } from './ui/button';
-import { ScrollArea } from './ui/scroll-area';
+import { FC, useEffect } from 'react';
+import { Button } from '../ui/button';
+import { ScrollArea } from '../ui/scroll-area';
+import { useCalendarStore } from '@/lib/store/calendarStore';
 
-export const MyCalendars: FC<{ calendars: any[] | null }> = ({ calendars }) => {
+export const MyCalendars: FC = () => {
+  const { calendars, isLoading, error, fetchCalendars, deleteCalendar } =
+    useCalendarStore();
+
+  useEffect(() => {
+    fetchCalendars();
+  }, [fetchCalendars]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>An error occured: {error}</div>;
+
   return (
     <ScrollArea className="max-h-screen w-full pr-4">
-      {calendars?.map((calendar) => (
+      {calendars.map((calendar) => (
         <div
           className="flex items-center justify-between mb-4 gap-4"
           key={calendar.id}
@@ -37,6 +48,7 @@ export const MyCalendars: FC<{ calendars: any[] | null }> = ({ calendars }) => {
               variant="ghost"
               size="icon"
               className="hover:bg-red-100 hover:text-red-500"
+              onClick={() => deleteCalendar(calendar.id)}
             >
               <Trash2 size={16} />
             </Button>

@@ -3,7 +3,7 @@ import { TimeRange, UserAvailability } from '@/lib/mock';
 import { format, parse } from 'date-fns';
 import { Plus, X } from 'lucide-react';
 import { FC, useState } from 'react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 
 type DayViewProps = {
   date: Date;

@@ -2,7 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus } from 'lucide-react';
-import { FC } from 'react';
+import { FC, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '../ui/button';
@@ -21,6 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { useCalendarStore } from '@/lib/store/calendarStore';
+import { CalendarColor } from '@/lib/mock';
 
 const colorOptions = [
   { value: 'red', label: 'Red' },
@@ -33,28 +35,34 @@ const colorOptions = [
   { value: 'teal', label: 'Teal' },
 ];
 
-const formSchema = z.object({
-  name: z.string().min(3, {
-    message: 'Calendar name must be at least 2 characters.',
-  }),
-  color: z.enum(
-    ['red', 'green', 'blue', 'yellow', 'purple', 'orange', 'pink', 'teal'],
-    {
-      required_error: 'Please select a color.',
-    }
-  ),
-});
-
 export const CreateCalendarForm: FC = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const addCalendar = useCalendarStore((state) => state.addCalendar);
+
+  const zodSchema = z.object({
+    title: z.string().min(3, {
+      message: 'Calendar name must be at least 2 characters.',
+    }),
+    color: z.nativeEnum(CalendarColor, {
+      required_error: 'Please select a color.',
+    }),
+  });
+
+  const form = useForm<z.infer<typeof zodSchema>>({
+    resolver: zodResolver(zodSchema),
     defaultValues: {
-      name: '',
+      title: '',
+      color: undefined,
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  function onSubmit(values: z.infer<typeof zodSchema>) {
+    addCalendar(values)
+      .then(() => {
+        form.reset();
+      })
+      .catch((error) => {
+        console.error('Failed to insert calendar:', error);
+      });
   }
 
   return (
@@ -65,7 +73,7 @@ export const CreateCalendarForm: FC = () => {
       >
         <FormField
           control={form.control}
-          name="name"
+          name="title"
           render={({ field }) => (
             <FormItem className="col-span-10">
               <FormControl>

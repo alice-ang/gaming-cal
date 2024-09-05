@@ -5,7 +5,7 @@ export * from './CalendarEdit';
 export * from './forms';
 export * from './ThemeProvider'
 export * from './ThemeToggle'
-export * from './MyCalendars'
-export * from './CalendarDashboard'
+export * from './Calendar/Calendars'
+export * from './Calendar/Dashboard'
 export * from './SessionCard'
-export * from './DayView'
+export * from './Calendar/DayView'
