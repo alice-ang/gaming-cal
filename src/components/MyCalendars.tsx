@@ -4,12 +4,11 @@ import Link from 'next/link';
 import { FC } from 'react';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
-import { mockCalendars } from '@/lib/mock';
 
-export const MyCalendars: FC = () => {
+export const MyCalendars: FC<{ calendars: any[] | null }> = ({ calendars }) => {
   return (
     <ScrollArea className="max-h-screen w-full pr-4">
-      {mockCalendars?.map((calendar) => (
+      {calendars?.map((calendar) => (
         <div
           className="flex items-center justify-between mb-4 gap-4"
           key={calendar.id}

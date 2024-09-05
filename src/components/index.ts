@@ -5,7 +5,6 @@ export * from './CalendarEdit';
 export * from './forms';
 export * from './ThemeProvider'
 export * from './ThemeToggle'
-export * from './QueryClientContextProvider'
 export * from './MyCalendars'
 export * from './CalendarDashboard'
 export * from './SessionCard'

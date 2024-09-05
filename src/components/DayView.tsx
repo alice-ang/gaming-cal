@@ -19,12 +19,13 @@ export const DayView: FC<DayViewProps> = ({
   friendsAvailability,
 }) => {
   const [newTimeRange, setNewTimeRange] = useState<TimeRange>({
-    start: '09:00',
+    start: '08:00',
     end: '17:00',
   });
 
   const dateString = format(date, 'yyyy-MM-dd');
   const allUsers = [userAvailability, ...friendsAvailability];
+
   const handleAddTimeRange = () => {
     const updatedAvailability = { ...userAvailability };
     if (!updatedAvailability.availableDates[dateString]) {

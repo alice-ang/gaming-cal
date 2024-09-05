@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { timeSlots } from '@/lib/mock';
+import { cn } from '@/lib/utils';
 import { Edit2, Trash2 } from 'lucide-react';
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 
@@ -221,7 +222,10 @@ export const CalendarDayView: FC<CalendarDayViewProps> = ({
               <Popover key={booking.id}>
                 <PopoverTrigger asChild>
                   <div
-                    className={`absolute left-16 right-4 ${booking.color} rounded-md flex items-center justify-between text-xs px-2 cursor-pointer`}
+                    className={cn(
+                      booking.color,
+                      `absolute left-16 right-4 rounded-md flex items-center justify-between text-xs px-2 cursor-pointer`
+                    )}
                     style={getBookingStyle(booking)}
                   >
                     <span>{booking.name}</span>

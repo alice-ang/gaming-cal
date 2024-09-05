@@ -5,8 +5,6 @@ import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import QueryClientContextProvider from '@/components/QueryClientContextProvider';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -23,14 +21,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={cn(inter.className, '')}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <QueryClientContextProvider>
-            <Dialog>
-              <NavBar />
-              {children}
-              <Toaster />
-            </Dialog>
-            <ReactQueryDevtools initialIsOpen={false} />
-          </QueryClientContextProvider>
+          <Dialog>
+            <NavBar />
+            {children}
+            <Toaster />
+          </Dialog>
         </ThemeProvider>
       </body>
     </html>

@@ -1,7 +1,6 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
@@ -47,7 +46,6 @@ const formSchema = z.object({
 });
 
 export const CreateCalendarForm: FC = () => {
-  const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
