@@ -1,7 +1,7 @@
 import { CalendarEdit, ScheduleCalendar, ShareCalendar } from '@/components';
 import { Badge } from '@/components/ui/badge';
 import { initialFriendsAvailability } from '@/lib/mock';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, supabase } from '@/lib/supabase/client';
 
 export default async function CalendarPage({
   params,
@@ -34,4 +34,18 @@ export default async function CalendarPage({
       </div>
     </main>
   );
+}
+export async function generateStaticParams() {
+  const { data: calendars, error } = await supabase
+    .from('calendars')
+    .select('id');
+
+  if (error) {
+    console.error('Error fetching calendar IDs:', error);
+    return [];
+  }
+
+  return calendars.map((calendar) => ({
+    id: calendar.id.toString(),
+  }));
 }
