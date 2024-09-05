@@ -3,7 +3,7 @@ import { TimeRange, UserAvailability } from '@/lib/mock';
 import { format, parse } from 'date-fns';
 import { Plus, X } from 'lucide-react';
 import { FC, useState } from 'react';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 
 type DayViewProps = {
   date: Date;
@@ -19,12 +19,13 @@ export const DayView: FC<DayViewProps> = ({
   friendsAvailability,
 }) => {
   const [newTimeRange, setNewTimeRange] = useState<TimeRange>({
-    start: '09:00',
+    start: '08:00',
     end: '17:00',
   });
 
   const dateString = format(date, 'yyyy-MM-dd');
   const allUsers = [userAvailability, ...friendsAvailability];
+
   const handleAddTimeRange = () => {
     const updatedAvailability = { ...userAvailability };
     if (!updatedAvailability.availableDates[dateString]) {

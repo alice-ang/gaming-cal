@@ -1,11 +1,8 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from '@tanstack/react-query';
+import { mockCalendars, sessionData } from '@/lib/mock';
+import { supabase } from '@/lib/supabase/client';
 import { FC } from 'react';
-import { CreateCalendarForm } from './forms';
-import { MyCalendars } from './MyCalendars';
+import { CreateCalendarForm } from '../forms';
+import { SessionCard } from '../SessionCard';
 import {
   Card,
   CardContent,
@@ -13,13 +10,12 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from './ui/card';
-import { Separator } from './ui/separator';
-import { ScrollArea } from './ui/scroll-area';
-import { mockCalendars, sessionData } from '@/lib/mock';
-import { SessionCard } from './SessionCard';
+} from '../ui/card';
+import { ScrollArea } from '../ui/scroll-area';
+import { Separator } from '../ui/separator';
+import { MyCalendars } from './Calendars';
 
-export const CalendarDashboard: FC = async () => {
+export const Dashboard: FC = async () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
       <Card className="col-span-1 md:col-span-2">

@@ -87,12 +87,30 @@ export const sessionData =[
   },
 ]
 
- export  const mockCalendars = [
-    { id: '1', title: 'Arbete', color: '#FF5733', events: 5 },
-    { id: '2', title: 'Personligt', color: '#33FF57', events: 3 },
-    { id: '3', title: 'Träning', color: '#3357FF', events: 2 },
-    { id: '4', title: 'Studier', color: '#FF33F1', events: 4 },
-    { id: '5', title: 'Familj', color: '#33FFF1', events: 6 },
+export type Calendar =  {
+  id: string;
+  title: string;
+  color: CalendarColor;
+}
+
+export enum CalendarColor {
+  Red = 'red',
+  Green = 'green',
+  Blue = 'blue',
+  Yellow = 'yellow',
+  Purple = 'purple',
+  Orange = 'orange',
+  Pink = 'pink',
+  Teal = 'teal'
+}
+
+
+ export  const mockCalendars: Calendar[] = [
+    { id: '1', title: 'Arbete', color: CalendarColor.Blue,  },
+    { id: '2', title: 'Personligt', color: CalendarColor.Orange, },
+    { id: '3', title: 'Träning', color: CalendarColor.Red,  },
+    { id: '4', title: 'Studier', color: CalendarColor.Green,  },
+    { id: '5', title: 'Familj', color: CalendarColor.Teal, },
   ];
 
 

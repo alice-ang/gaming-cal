@@ -3,7 +3,7 @@ import { UserAvailability } from '@/lib/mock';
 import { format } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { FC, useCallback, useMemo, useState } from 'react';
-import { DayView } from './DayView';
+import { DayView } from './Calendar/DayView';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
 import {
